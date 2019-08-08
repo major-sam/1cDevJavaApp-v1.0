@@ -456,10 +456,20 @@ public class Docker {
         JFrame frame = new JFrame("Docker");
 
         DefaultListModel Smodel = new DefaultListModel();
-        Smodel.addElement("pst-1c-db2");
-        Smodel.addElement("dc-1c-dberp");
-        Smodel.addElement("dc-1c-dbkaz");
-        Smodel.addElement("DC-SQL12-1CN\\CG");
+        try {
+            BufferedReader abc = new BufferedReader(new FileReader("src/srv.properties"));
+            String s;
+            while((s = abc.readLine()) != null) {
+                Smodel.addElement(s);
+            }
+        }
+        catch(Exception ex){
+            System.out.println (ex.toString());
+        }
+//        Smodel.addElement("pst-1c-db2");
+//        Smodel.addElement("dc-1c-dberp");
+//        Smodel.addElement("dc-1c-dbkaz");
+//        Smodel.addElement("DC-SQL12-1CN\\CG");
         Serverlist.setModel(Smodel);
         serverscrool.setViewportView(Serverlist);
         sourcescrool.setViewportView(Sourcelist);
@@ -468,8 +478,6 @@ public class Docker {
         Serverlist.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                //String fullName = Secur32Util.getUserNameEx(Secur32.EXTENDED_NAME_FORMAT.NameDisplay);
-                //System.out.println(fullName);
                 server = (String)Serverlist.getSelectedValue();
                 String dblistquery="SELECT name FROM master.dbo.sysdatabases  where dbid >4";
                 mssqlgetdb(dblistquery);
