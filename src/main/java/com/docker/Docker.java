@@ -397,11 +397,9 @@ public class Docker {
         if (stmt.execute(query)) {
             rs = stmt.getResultSet();
         }
-        //buffer.clear();
         while (rs.next()){
             String dbname=rs.getString("name");
             sdb.addElement(dbname);
-            //buffer.add(dbname);
             if (!workbase.contains(dbname)){
                 tdb.addElement(dbname);
             }
@@ -466,10 +464,6 @@ public class Docker {
         catch(Exception ex){
             System.out.println (ex.toString());
         }
-//        Smodel.addElement("pst-1c-db2");
-//        Smodel.addElement("dc-1c-dberp");
-//        Smodel.addElement("dc-1c-dbkaz");
-//        Smodel.addElement("DC-SQL12-1CN\\CG");
         Serverlist.setModel(Smodel);
         serverscrool.setViewportView(Serverlist);
         sourcescrool.setViewportView(Sourcelist);
