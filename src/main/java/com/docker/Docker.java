@@ -250,7 +250,6 @@ public class Docker {
                 "I found '"+m.group()+"' starting at index "+m.start()+" and ending at index "+m.end()+"." :
                 "I found nothing!");
          int disk = Integer.parseInt(m.group().replaceAll("[^0-9]",""));
-         //System.out.println(disk);
 
         return disk;
     }
