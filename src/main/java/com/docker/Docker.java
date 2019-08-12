@@ -208,14 +208,6 @@ public class Docker {
         ResultSet rs1 = null;
         int progress=0;
         try {
-//            String query1="SELECT  r.session_id AS [Session_Id]\n" +
-//                    "             ,CONVERT(NUMERIC(6, 0), r.percent_complete) AS [Complete]\n" +
-//                    "             ,CONVERT(VARCHAR(1000), (\n" +
-//                    "             SELECT SUBSTRING(TEXT, r.statement_start_offset / 2,1000)  \n" +
-//                    "             FROM sys.dm_exec_sql_text(sql_handle)\n" +
-//                    "             ))as 'query'\n" +
-//                    "             FROM sys.dm_exec_requests r\n" +
-//                    "             WHERE   command like 'BACKUP%'";
             String url ="jdbc:sqlserver://"+server+";user=login1c;password=Rhjrjlbk";
             conn1 = DriverManager.getConnection(url);
             stmt1 = conn1.createStatement();
@@ -225,7 +217,6 @@ public class Docker {
             }
             while (rs1.next()){
                 progress = Integer.parseInt(rs1.getString("Complete") ) ;
-                //String exquery = rs1.getString("query");
                             }
 
         }
@@ -241,10 +232,6 @@ public class Docker {
         String strsource=wmisapce.getText();
         String stringToSearch = strsource.replaceAll(strRegEx,"");
         Pattern p = Pattern.compile(diskname +".*");
-        //System.out.println(stringToSearch);
-       // System.out.println(p);
-        //System.out.println(diskname);
-
         Matcher m = p.matcher(stringToSearch);
         System.out.println(m.find() ?
                 "I found '"+m.group()+"' starting at index "+m.start()+" and ending at index "+m.end()+"." :
