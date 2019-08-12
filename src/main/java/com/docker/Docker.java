@@ -46,7 +46,7 @@ public class Docker {
     private List sourcebuffer, targetbuffer;
     private String sourceBase,targetBase, diskname ,server, warnmessage ,bakthreadstatus ,resthreadstatus,path,datapath,logpath,curbakdatabasename,curbakdatabasefinishtime;
     private Integer backupprogress,approve, restoreprogress,schedulcounter1,schedulcounter2;
-
+// test comment
     Thread backupdb = new Thread(new Runnable() {
         @Override
         public void run() {
