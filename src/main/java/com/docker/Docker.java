@@ -363,7 +363,7 @@ public class Docker {
         ResultSet rs = null;
         List<String> workbase= new ArrayList<String>();
         try {
-            BufferedReader abc = new BufferedReader(new FileReader("src/base.properties"));
+            BufferedReader abc = new BufferedReader(new FileReader("conf/base.properties"));
             String s;
             while((s = abc.readLine()) != null) {
                 workbase.add(s);
@@ -441,7 +441,7 @@ public class Docker {
 
         DefaultListModel Smodel = new DefaultListModel();
         try {
-            BufferedReader abc = new BufferedReader(new FileReader("src/srv.properties"));
+            BufferedReader abc = new BufferedReader(new FileReader("conf/srv.properties"));
             String s;
             while((s = abc.readLine()) != null) {
                 Smodel.addElement(s);
@@ -698,7 +698,7 @@ public class Docker {
             }
         });
 
-        ImageIcon img = new ImageIcon("src/d2.png");
+        ImageIcon img = new ImageIcon("conf/d2.png");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setIconImage(img.getImage());
         frame.setMinimumSize(new Dimension(800, 600));
