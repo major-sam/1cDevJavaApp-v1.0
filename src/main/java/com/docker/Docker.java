@@ -698,7 +698,7 @@ public class Docker {
             }
         });
 
-        ImageIcon img = new ImageIcon("conf/d2.png");
+        ImageIcon img = new ImageIcon("conf/icon.png");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setIconImage(img.getImage());
         frame.setMinimumSize(new Dimension(800, 600));

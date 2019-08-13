@@ -1,3 +1,5 @@
 # ignore files
 /.idea
 /target
+/deploy
+/depoy
