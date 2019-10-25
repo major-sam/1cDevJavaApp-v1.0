@@ -13,7 +13,7 @@ import java.awt.event.ItemListener;
 import java.io.*;
 import java.net.InetAddress;
 import java.sql.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -435,12 +435,20 @@ private Thread backup_db = new Thread(new Runnable() {
     }
     private Docker() {
         JFrame frame = new JFrame("Docker");
-
+        FileInputStream fis;
+        Properties property = new Properties();
         DefaultListModel s_model = new DefaultListModel();
         try {
-            BufferedReader abc = new BufferedReader(new FileReader("conf/srv.properties"));
-            String s;
-            while((s = abc.readLine()) != null) {
+//            BufferedReader abc = new BufferedReader(new FileReader("conf/default.properties"));
+//            String s;
+//            while((s = abc.readLine()) != null) {
+//                s_model.addElement(s);
+            fis = new FileInputStream("conf/default.properties");
+            property.load(fis);
+            String[] servers_property = property.getProperty("servers").split(",");
+            List<String> al;
+            al = Arrays.asList(servers_property);
+            for(String s: al){
                 s_model.addElement(s);
             }
         }
