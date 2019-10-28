@@ -1,5 +1,7 @@
 package com.docker;
 
+import org.jasypt.util.text.StrongTextEncryptor;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -28,7 +30,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 
-@SuppressWarnings("unchecked")
+
 public class Docker {
     private JButton backup_restore_db_button,quit;
     private JLabel source_base_size, target_base_size, wmi_space;
@@ -46,9 +48,9 @@ public class Docker {
     private JTextField target_search;
     private List source_buffer, target_buffer;
     private String source_base, target_base, disk_name,server, warn_message, bak_thread_status, res_thread_status, path,
-            data_path, log_path, cur_bak_database_name, cur_bak_database_finish_time;
+            data_path, log_path, cur_bak_database_name, cur_bak_database_finish_time, user_name, user_password;
     private Integer backup_progress,approve, restore_progress, scheduler_counter1, scheduler_counter2;
-private Thread backup_db = new Thread(new Runnable() {
+    private Thread backup_db = new Thread(new Runnable() {
         @Override
         public void run() {
             try {
@@ -57,7 +59,7 @@ private Thread backup_db = new Thread(new Runnable() {
                 Statement stmt;
                 String query="SET NOCOUNT ON " +
                         "BACKUP DATABASE ["+ source_base +"] TO  DISK = N'current.bak' WITH NOFORMAT, INIT,  NAME = N'"+ source_base +"-Full Database Backup', SKIP, NOREWIND, NOUNLOAD,  STATS = 10";
-                String url ="jdbc:sqlserver://"+server+";user=login1c;password=Rhjrjlbk";
+                String url ="jdbc:sqlserver://"+server+";user="+user_name+";password="+user_password+"";
                 conn = DriverManager.getConnection(url);
                 stmt = conn.createStatement();
                 stmt.executeQuery(query);
@@ -83,7 +85,7 @@ private Thread backup_db = new Thread(new Runnable() {
                 Connection conn;
                 Statement stmt;
                 ResultSet rs;
-                String url ="jdbc:sqlserver://"+server+";user=login1c;password=Rhjrjlbk";
+                String url ="jdbc:sqlserver://"+server+";user="+user_name+";password="+user_password+"";
                 conn = DriverManager.getConnection(url);
                 stmt = conn.createStatement();
                 String query= "RESTORE FILELISTONLY FROM DISK='current.bak' ";
@@ -200,7 +202,7 @@ private Thread backup_db = new Thread(new Runnable() {
         ResultSet rs1;
         int progress=0;
         try {
-            String url ="jdbc:sqlserver://"+server+";user=login1c;password=Rhjrjlbk";
+            String url ="jdbc:sqlserver://"+server+";user="+user_name+";password="+user_password+"";
             conn1 = DriverManager.getConnection(url);
             stmt1 = conn1.createStatement();
             rs1 = stmt1.executeQuery(query1);
@@ -241,7 +243,7 @@ private Thread backup_db = new Thread(new Runnable() {
         Statement stmt;
         ResultSet rs;
         try {
-            String url ="jdbc:sqlserver://"+ server +";user=login1c;password=Rhjrjlbk";
+            String url ="jdbc:sqlserver://"+ server +";user="+user_name+";password="+user_password+"";
             conn =
                     DriverManager.getConnection(url);
             stmt = conn.createStatement();
@@ -275,7 +277,7 @@ private Thread backup_db = new Thread(new Runnable() {
         Statement stmt;
         ResultSet rs;
         try {
-            String url ="jdbc:sqlserver://"+ server +";user=login1c;password=Rhjrjlbk";
+            String url ="jdbc:sqlserver://"+ server +";user="+user_name+";password="+user_password+"";
             conn =
                     DriverManager.getConnection(url);
             stmt = conn.createStatement();
@@ -309,7 +311,7 @@ private Thread backup_db = new Thread(new Runnable() {
                 "FROM sys.dm_exec_requests r\n" +
                 "WHERE   command like 'BACKUP%' or command like 'RESTORE%'";
         try {
-            String url ="jdbc:sqlserver://"+ server +";user=login1c;password=Rhjrjlbk";
+            String url ="jdbc:sqlserver://"+ server +";user="+user_name+";password="+user_password+"";
             conn =
                     DriverManager.getConnection(url);
             stmt = conn.createStatement();
@@ -334,7 +336,7 @@ private Thread backup_db = new Thread(new Runnable() {
         Statement stmt;
         ResultSet rs;
         try {
-            String url ="jdbc:sqlserver://"+ server +";user=login1c;password=Rhjrjlbk";
+            String url ="jdbc:sqlserver://"+ server +";user="+user_name+";password="+user_password+"";
             conn =
                     DriverManager.getConnection(url);
             stmt = conn.createStatement();
@@ -370,7 +372,7 @@ private Thread backup_db = new Thread(new Runnable() {
             System.out.println (ex.toString());
         }
         try {
-        String url ="jdbc:sqlserver://"+ server +";user=login1c;password=Rhjrjlbk";
+        String url ="jdbc:sqlserver://"+ server +";user="+user_name+";password="+user_password+"";
         conn =
                 DriverManager.getConnection(url);
         stmt = conn.createStatement();
@@ -403,7 +405,7 @@ private Thread backup_db = new Thread(new Runnable() {
         Statement stmt;
         ResultSet rs;
         try {
-            String url ="jdbc:sqlserver://"+ server +";user=login1c;password=Rhjrjlbk";
+            String url ="jdbc:sqlserver://"+ server +";user="+user_name+";password="+user_password+"";
             conn =
                     DriverManager.getConnection(url);
             stmt = conn.createStatement();
@@ -434,17 +436,71 @@ private Thread backup_db = new Thread(new Runnable() {
         return list;
     }
     private Docker() {
+        StrongTextEncryptor textEncryptor = new StrongTextEncryptor();
+        textEncryptor.setPassword("$ecurePWD");
         JFrame frame = new JFrame("Docker");
         FileInputStream fis;
         Properties property = new Properties();
         DefaultListModel s_model = new DefaultListModel();
         try {
-//            BufferedReader abc = new BufferedReader(new FileReader("conf/default.properties"));
-//            String s;
-//            while((s = abc.readLine()) != null) {
-//                s_model.addElement(s);
             fis = new FileInputStream("conf/default.properties");
             property.load(fis);
+            String crypt_name = property.getProperty("user");
+            String crypt_password = property.getProperty("password");
+            while (true) {
+                if (crypt_name == null | crypt_password == null) {
+                    JPanel panel = new JPanel(new BorderLayout(5, 7));
+                    JPanel labels = new JPanel(new GridLayout(0, 1, 2, 2));
+                    labels.add(new JLabel("Login:", SwingConstants.RIGHT));
+                    labels.add(new JLabel("Pass:", SwingConstants.RIGHT));
+                    labels.add(new JLabel("Confirm:", SwingConstants.RIGHT));
+                    panel.add(labels, BorderLayout.WEST);
+                    JPanel fields = new JPanel(new GridLayout(0, 1, 2, 2));
+                    JTextField username = new JTextField(textEncryptor.decrypt(crypt_name));
+                    JPasswordField pass = new JPasswordField(10);
+                    JPasswordField pass_confirm = new JPasswordField(10);
+                    fields.add(username);
+                    fields.add(pass);
+                    fields.add(pass_confirm);
+                    panel.add(fields, BorderLayout.CENTER);
+                    String[] options = new String[]{"OK", "Cancel"};
+                    int option = JOptionPane.showOptionDialog(null, panel, "Enter Credentials For MSSQL Server",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
+                            null, options, options[0]);
+                    if (option == 0) // pressing OK button
+                    {
+                        String name = username.getText();
+                        String password = new String( pass.getPassword());
+                        String confirm = new String( pass_confirm.getPassword());
+                        if (!password.equals(confirm) | password.isEmpty()){
+                            JOptionPane  bad_confirm = new JOptionPane ("Bad password confirm or empty password", JOptionPane.ERROR_MESSAGE);
+                            JDialog dialog = bad_confirm.createDialog("Confirm Not Match");
+                            dialog.setAlwaysOnTop(true);
+                            dialog.setVisible(true);
+                        }
+                        else {
+                            Properties prop = new Properties();
+                            crypt_name = textEncryptor.encrypt(name);
+                            crypt_password = textEncryptor.encrypt(password);
+                            prop.setProperty("user",crypt_name);
+                            prop.setProperty("password",crypt_password);
+                            String conf_path = ".\\conf\\default.properties";
+                            prop.store(new FileOutputStream(conf_path,true), "\nremove lines if password changes or wrong");
+                            System.out.println("Your password is: " + new String(password) + "\nYour password confirm is: " + new String(confirm));
+                            break;
+                        }
+                    }
+                    else {
+                        System.exit(0);
+                    }
+                }
+                else {
+                    break;
+                }
+            }
+            user_name = textEncryptor.decrypt(crypt_name);
+            user_password = textEncryptor.decrypt(crypt_password);
+
             String[] servers_property = property.getProperty("servers").split(",");
             List<String> al;
             al = Arrays.asList(servers_property);
@@ -455,6 +511,7 @@ private Thread backup_db = new Thread(new Runnable() {
         catch(Exception ex){
             System.out.println (ex.toString());
         }
+
         server_list.setModel(s_model);
         server_scroll.setViewportView(server_list);
         source_scroll.setViewportView(source_list);

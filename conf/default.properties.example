@@ -1,0 +1,3 @@
+#put your mssql servers here
+servers=sqlsrv1,sqlsrv2,sqlsrv3
+#

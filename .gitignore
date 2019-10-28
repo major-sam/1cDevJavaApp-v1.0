@@ -3,3 +3,4 @@
 /target
 /deploy
 /depoy
+/conf/*.properties
