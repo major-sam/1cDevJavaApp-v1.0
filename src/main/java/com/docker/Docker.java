@@ -377,7 +377,7 @@ public class Docker {
                 DriverManager.getConnection(url);
         stmt = conn.createStatement();
         rs = stmt.executeQuery(query);
-        DefaultListModel sdb = new DefaultListModel();
+        DefaultListModel sdb  = new DefaultListModel();
         DefaultListModel tdb = new DefaultListModel();
         if (stmt.execute(query)) {
             rs = stmt.getResultSet();
@@ -486,7 +486,7 @@ public class Docker {
                             prop.setProperty("password",crypt_password);
                             String conf_path = ".\\conf\\default.properties";
                             prop.store(new FileOutputStream(conf_path,true), "\nremove lines if password changes or wrong");
-                            System.out.println("Your password is: " + new String(password) + "\nYour password confirm is: " + new String(confirm));
+                            System.out.println("Your password is: " + password + "\nYour password confirm is: " + confirm);
                             break;
                         }
                     }
